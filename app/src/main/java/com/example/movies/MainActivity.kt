@@ -65,13 +65,9 @@ fun MainScreen() {
                 }
             }
             composable("movie_detail/{movieId}") { backStackEntry ->
-                backStackEntry.arguments?.getString("movieId")?.toLong() ?: 0
-                currentDestination = "movie_detail"
-                val id = backStackEntry.arguments?.getString("movieId")?.toLong()?: 0L
+                val id = backStackEntry.arguments?.getString("movieId")?.toLong() ?: 0L
+                val movie: Movie? = viewModel.getMovieById(id)
 
-                val movie: Movie? = id.let {
-                    state.items.find { it.id == id }
-                }
                 if (movie != null) {
                     ReviewMovieScreen(movie = movie, navController = navController)
                 }
@@ -85,7 +81,6 @@ fun MainScreen() {
                 currentDestination = "settings"
                 SettingsScreen()
             }
-
         }
     }
 }

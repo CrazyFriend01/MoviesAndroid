@@ -10,7 +10,6 @@ import com.example.movies.state.ListState
 import com.example.movies.utils.launchLoadingAndError
 import java.io.IOException
 
-
 class MovieViewModel(
     private val repository: IMovieRepository
 ) : ViewModel() {
@@ -35,14 +34,14 @@ class MovieViewModel(
         }
     }
 
+    fun getMovieById(id: Long): Movie? {
+        return viewState.items.find { it.id == id }
+    }
+
     private class MutableListState : ListState {
         override var searchName: String by mutableStateOf("movie")
         override var items: List<Movie> by mutableStateOf(emptyList())
         override var error: String? by mutableStateOf(null)
         override var loading: Boolean by mutableStateOf(false)
     }
-
-
-
-
 }
