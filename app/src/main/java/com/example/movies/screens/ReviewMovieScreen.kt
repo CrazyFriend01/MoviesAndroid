@@ -24,10 +24,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.movies.model.Movie
+import com.example.movies.model.MovieDisplayModel
 
 
 @Composable
 fun ReviewMovieScreen(movie: Movie, navController: NavController) {
+    val movieDisplay = MovieDisplayModel.fromMovie(movie)
 
     if (movie != null) {
         LazyColumn(
@@ -81,14 +83,14 @@ fun ReviewMovieScreen(movie: Movie, navController: NavController) {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "${movie.premiere} г., ${movie.genre.joinToString(", ")}",
+                            text = "${movieDisplay.premiereText}, ${movieDisplay.genreText}",
                             style = MaterialTheme.typography.bodyLarge,
                             color = Color.DarkGray
                         )
                         Spacer(modifier = Modifier.height(8.dp))
 
                         Text(
-                            text = "${movie.countries.joinToString(", ")}, ${movie.duration} мин.",
+                            text = movieDisplay.durationText,
                             style = MaterialTheme.typography.bodyLarge,
                             color = Color.DarkGray
                         )
@@ -97,47 +99,46 @@ fun ReviewMovieScreen(movie: Movie, navController: NavController) {
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Text(
-                    text = "Описание фильма \"${movie.title}\"", fontSize = 24.sp,
+                    text = "Описание фильма \"${movie.title}\"",
+                    fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                 )
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Text(
-                    text = movie.description,
+                    text = movieDisplay.descriptionText,
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Spacer(modifier = Modifier.height(24.dp))
 
-                if (movie.director.isNotEmpty()) {
+                movieDisplay.directorText?.let { director ->
                     androidx.compose.material3.Text(
-                        text = "Режиссер: ${movie.director.joinToString(", ")}",
+                        text = director,
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
                 Spacer(modifier = Modifier.height(8.dp))
 
-                if (movie.starring.isNotEmpty()) {
+                if (movieDisplay.starringText.isNotEmpty()) {
                     androidx.compose.material3.Text(
-                        text = "В ролях: ",
+                        text = "В ролях:",
                         style = MaterialTheme.typography.bodyLarge,
                     )
 
                     Column(
                         modifier = Modifier.padding(8.dp)
                     ) {
-                        movie.starring.forEach { actor ->
+                        movieDisplay.starringText.forEach { actor ->
                             Text(
                                 text = actor,
                                 style = MaterialTheme.typography.bodyLarge,
-                                modifier = Modifier
-                                    .padding(vertical = 4.dp)
+                                modifier = Modifier.padding(vertical = 4.dp)
                             )
                         }
                     }
                 }
                 Spacer(modifier = Modifier.height(8.dp))
             }
-
         }
     } else {
         Text(text = "Фильм не найден", style = MaterialTheme.typography.bodyMedium)
