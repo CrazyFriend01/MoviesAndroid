@@ -25,8 +25,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import com.example.movies.R
 import com.example.movies.model.MovieViewModel
 
 
@@ -79,10 +81,10 @@ fun NoInternetScreen(onRetryClick: () -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Отсутствует интернет-соединение", style = MaterialTheme.typography.titleLarge)
+        Text(text = stringResource(R.string.no_internet_message), style = MaterialTheme.typography.titleLarge)
         Spacer(modifier = Modifier.height(8.dp))
         Button(onClick = onRetryClick) {
-            Text(text = "обновить")
+            Text(text = stringResource(R.string.refresh_button))
         }
     }
 }

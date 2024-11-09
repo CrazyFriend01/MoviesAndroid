@@ -19,6 +19,10 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+
+        val movieApiKey: String = project.findProperty("MOVIE_API_KEY") as? String ?: "P6VNCMX-Z4J4CM1-HWZPCDA-GS3G2JY"
+        buildConfigField("String", "MOVIE_API_KEY", "\"$movieApiKey\"")
     }
 
     buildTypes {
@@ -39,6 +43,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -52,7 +57,7 @@ android {
 
 dependencies {
     implementation(libs.javax.inject)
-    implementation (libs.kotlinx.coroutines.android.v164)
+    implementation(libs.kotlinx.coroutines.android.v164)
     implementation(libs.alignment)
     implementation(libs.koin.androidx.compose)
     implementation(libs.koin.core)
@@ -63,22 +68,22 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.koin.android)
     implementation(libs.glide)
-    implementation (libs.gson)
+    implementation(libs.gson)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
-    implementation (libs.androidx.navigation.compose)
-    implementation (libs.androidx.lifecycle.viewmodel.compose)
-    implementation (libs.androidx.material)
-    implementation (libs.ui)
-    implementation (libs.ui.tooling)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.material)
+    implementation(libs.ui)
+    implementation(libs.ui.tooling)
     implementation(libs.coil.compose)
-    implementation (libs.androidx.lifecycle.viewmodel.ktx)
-    implementation (libs.androidx.lifecycle.livedata.ktx)
-    implementation (libs.androidx.lifecycle.runtime.ktx.v251)
-    implementation (libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx.v251)
+    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.ui.tooling.preview)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
