@@ -13,7 +13,7 @@ class MovieRepository(
     private val mapper: MovieResponseToEntityMapper
 ) : IMovieRepository {
 
-    override suspend fun getMovie(nameSearch: String): List<Movie> {
+    override suspend fun getMovie(type: String, contentStatus: String): List<Movie> {
         return withContext(Dispatchers.IO) {
             mapper.mapMovie(
                 api.getMovies(
@@ -29,8 +29,9 @@ class MovieRepository(
                     ),
                     sortField = listOf("rating.imdb"),
                     sortType = "-1",
-                    type = listOf(nameSearch),
-                    year = "2002"
+                    type = listOf(type),
+                    status= listOf(contentStatus),
+                    //year = "2002"
                 )
             )
         }

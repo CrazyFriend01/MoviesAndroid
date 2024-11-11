@@ -5,7 +5,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.padding
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.BottomNavigation
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -26,6 +28,7 @@ import com.example.movies.screens.HomeScreen
 import com.example.movies.screens.ReviewMovieScreen
 import com.example.movies.screens.ListScreen
 import com.example.movies.screens.SettingsScreen
+import com.example.movies.utils.LocalUtils.isFilter
 import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
@@ -42,7 +45,7 @@ class MainActivity : ComponentActivity() {
 fun MainScreen() {
     val navController = rememberNavController()
     var currentDestination by remember { mutableStateOf("movies") }
-    val viewModel = koinViewModel<MovieViewModel>()
+    val viewModel: MovieViewModel = koinViewModel<MovieViewModel>()
     val state = viewModel.viewState
     viewModel.viewState.error?.let {
         Text(text = it)
@@ -99,7 +102,17 @@ fun BottomNavigationBar(navController: NavController, currentDestination: String
 
         items.forEach { item ->
             BottomNavigationItem(
-                icon = { Icon(painter = painterResource(id = item.iconResId), contentDescription = item.title) },
+                icon = {
+                    BadgedBox(
+                        badge=  {
+                            if(isFilter.value && item.route == "movies"){
+                                Badge()
+                            }
+                        }
+                    ) {
+                        Icon(painter = painterResource(id = item.iconResId), contentDescription = item.title)
+                    }
+                },
                 label = { Text(item.title) },
                 selected = currentDestination == item.route,
                 onClick = {
