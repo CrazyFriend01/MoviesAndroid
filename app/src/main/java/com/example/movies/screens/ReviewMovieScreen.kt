@@ -41,6 +41,7 @@ fun ReviewMovieScreen(movie: Movie, navController: NavController) {
                         Text(
                             text = movie.title,
                             color = Color.Black,
+                            style = MaterialTheme.typography.headlineMedium,
                             textAlign = TextAlign.Center
                         )
                     }

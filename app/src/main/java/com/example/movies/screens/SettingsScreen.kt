@@ -74,8 +74,6 @@ fun SettingsScreen() {
             Row(
                 modifier = Modifier.fillMaxWidth()
             ) {
-
-
                 Button(
                     onClick = {
                         coroutine.launch {
@@ -99,8 +97,6 @@ fun SettingsScreen() {
                     Text("Сброс")
                 }
             }
-
-
             Text(
                 "Select Content Type",
                 style = MaterialTheme.typography.titleMedium,
@@ -150,7 +146,6 @@ fun StatusCards(items: List<String>, selected: String, onSelect: (String) -> Uni
                 )
             }
         }
-
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }

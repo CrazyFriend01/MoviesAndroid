@@ -24,6 +24,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.movies.model.Movie
 import com.example.movies.model.MovieViewModel
+import com.example.movies.screens.FavoriteScreen
 import com.example.movies.screens.HomeScreen
 import com.example.movies.screens.ReviewMovieScreen
 import com.example.movies.screens.ListScreen
@@ -84,6 +85,10 @@ fun MainScreen() {
                 currentDestination = "settings"
                 SettingsScreen()
             }
+            composable("favorites"){
+                currentDestination = "favorites"
+                FavoriteScreen(navController)
+            }
         }
     }
 }
@@ -97,7 +102,8 @@ fun BottomNavigationBar(navController: NavController, currentDestination: String
         val items = listOf(
             BottomNavItem("Home", "home", R.drawable.home),
             BottomNavItem("Movies", "movies", R.drawable.list),
-            BottomNavItem("Settings", "settings", R.drawable.settings)
+            BottomNavItem("favorites", "favorites", R.drawable.favorite),
+            BottomNavItem("Settings", "settings", R.drawable.settings),
         )
 
         items.forEach { item ->

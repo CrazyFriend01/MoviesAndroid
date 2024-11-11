@@ -14,7 +14,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,12 +27,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberImagePainter
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.rememberAsyncImagePainter
+import com.example.movies.data.model.MovieEntity
+import com.example.movies.model.FavoriteViewModel
 import com.example.movies.model.Movie
 import com.example.movies.model.MovieViewModel
 import com.example.movies.ui.theme.components.LoadingScreen
-
 
 @Composable
 fun ListScreen(viewModel: MovieViewModel, onMovieClick: (Long) -> Unit) {
@@ -63,6 +70,8 @@ fun ListScreen(viewModel: MovieViewModel, onMovieClick: (Long) -> Unit) {
 
 @Composable
 private fun ConstructorItem(movie: Movie, onMovieClick: (Long) -> Unit) {
+    val favoriteViewMovie: FavoriteViewModel = viewModel()
+    val isFavorite = favoriteViewMovie.favoriteMovieList.any { it.id.toLong() == movie.id }
     ListItem(modifier = Modifier
         .clickable { onMovieClick(movie.id) }
         .padding(8.dp)
@@ -77,16 +86,44 @@ private fun ConstructorItem(movie: Movie, onMovieClick: (Long) -> Unit) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = rememberImagePainter(movie.posterUrl),
+                painter = rememberAsyncImagePainter(movie.posterUrl),
                 contentDescription = null,
                 modifier = Modifier.size(170.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Column {
+            Column (
+                modifier = Modifier.weight(1f)
+            ){
                 Text(movie.title, style = MaterialTheme.typography.titleLarge)
                 Text(
-                    movie.description.take(100) + "...",
+                    movie.description.take(80) + "...",
                     style = MaterialTheme.typography.bodyLarge
+                )
+            }
+            IconButton(
+                onClick = {
+                    val movieEntity = MovieEntity(
+                        id=movie.id.toString(),
+                        title=movie.title,
+                        genres = movie.genre.joinToString(", "),
+                        imageUrl = movie.posterUrl,
+                        year = movie.premiere,
+                        country = movie.countries.joinToString(", "),
+                        description = movie.description,
+                    )
+                    if (isFavorite) {
+                        favoriteViewMovie.removeMovieFromFavorite(movieEntity)
+                    } else {
+                        favoriteViewMovie.addMovieToFavorite(movieEntity, movie.posterUrl)
+                    }
+                },
+                modifier = Modifier.size(36.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Star,
+                    contentDescription = null,
+                    tint = if (isFavorite) Color(0xFFF89224) else Color.LightGray,
+                    modifier = Modifier.size(24.dp)
                 )
             }
         }
