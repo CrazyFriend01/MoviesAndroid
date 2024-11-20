@@ -33,8 +33,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.movies.data.model.MovieEntity
 import com.example.movies.model.FavoriteViewModel
-import com.example.movies.model.Movie
 import com.example.movies.model.MovieViewModel
+import com.example.movies.presentation.model.MovieUiModel
 import com.example.movies.ui.theme.components.LoadingScreen
 
 @Composable
@@ -47,7 +47,7 @@ fun ListScreen(viewModel: MovieViewModel, onMovieClick: (Long) -> Unit) {
         state.error?.let {
             Text(text = it)
             Spacer(modifier = Modifier.height(18.dp))
-            Button(onClick = { viewModel.loadMovies(type = "movie", contentStatus = "popular") }) {
+            Button(onClick = { viewModel.loadMovies() }) {
                 Text("Попробовать снова")
             }
 
@@ -69,7 +69,7 @@ fun ListScreen(viewModel: MovieViewModel, onMovieClick: (Long) -> Unit) {
 
 
 @Composable
-private fun ConstructorItem(movie: Movie, onMovieClick: (Long) -> Unit) {
+private fun ConstructorItem(movie: MovieUiModel, onMovieClick: (Long) -> Unit) {
     val favoriteViewMovie: FavoriteViewModel = viewModel()
     val isFavorite = favoriteViewMovie.favoriteMovieList.any { it.id.toLong() == movie.id }
     ListItem(modifier = Modifier
@@ -103,12 +103,12 @@ private fun ConstructorItem(movie: Movie, onMovieClick: (Long) -> Unit) {
             IconButton(
                 onClick = {
                     val movieEntity = MovieEntity(
-                        id=movie.id.toString(),
-                        title=movie.title,
-                        genres = movie.genre.joinToString(", "),
+                        id =movie.id.toString(),
+                        title =movie.title,
+                        genres = movie.genre,
                         imageUrl = movie.posterUrl,
                         year = movie.premiere,
-                        country = movie.countries.joinToString(", "),
+                        country = movie.countries,
                         description = movie.description,
                     )
                     if (isFavorite) {

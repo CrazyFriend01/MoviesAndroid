@@ -1,4 +1,6 @@
-package com.example.movies.model
+/*package com.example.movies.model
+
+import com.example.movies.presentation.model.MovieUiModel
 
 data class MovieDisplayModel(
     val premiereText: String,
@@ -11,7 +13,7 @@ data class MovieDisplayModel(
     val starringText: List<String>
 ) {
     companion object {
-        fun fromMovie(movie: Movie): MovieDisplayModel {
+        fun fromMovie(movie: MovieUiModel): MovieDisplayModel {
             return MovieDisplayModel(
                 premiereText = "${movie.premiere} г.",
                 genreText = movie.genre.joinToString(", "),
@@ -24,4 +26,4 @@ data class MovieDisplayModel(
             )
         }
     }
-}
+}*/

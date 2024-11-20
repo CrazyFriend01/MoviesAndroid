@@ -24,6 +24,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.movies.model.Movie
 import com.example.movies.model.MovieViewModel
+import com.example.movies.presentation.model.MovieUiModel
 import com.example.movies.screens.FavoriteScreen
 import com.example.movies.screens.HomeScreen
 import com.example.movies.screens.ReviewMovieScreen
@@ -70,10 +71,12 @@ fun MainScreen() {
             }
             composable("movie_detail/{movieId}") { backStackEntry ->
                 val id = backStackEntry.arguments?.getString("movieId")?.toLong() ?: 0L
-                val movie: Movie? = viewModel.getMovieById(id)
+                val movie: MovieUiModel? = id?.let {
+                    state.items.find { it.id == id }
+                }
 
                 if (movie != null) {
-                    ReviewMovieScreen(movie = movie, navController = navController)
+                    ReviewMovieScreen(movie, navController)
                 }
             }
 

@@ -5,6 +5,7 @@ import com.example.movies.data.api.MovieApi
 import com.example.movies.data.mapper.MovieResponseToEntityMapper
 import com.example.movies.domain.IMovieRepository
 import com.example.movies.model.Movie
+import com.example.movies.utils.LocalUtils.contentStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -13,7 +14,7 @@ class MovieRepository(
     private val mapper: MovieResponseToEntityMapper
 ) : IMovieRepository {
 
-    override suspend fun getMovie(type: String, contentStatus: String): List<Movie> {
+    override suspend fun getMovie(type: String): List<Movie> {
         return withContext(Dispatchers.IO) {
             mapper.mapMovie(
                 api.getMovies(
@@ -29,8 +30,8 @@ class MovieRepository(
                     ),
                     sortField = listOf("rating.imdb"),
                     sortType = "-1",
-                    type = listOf(type),
-                    status= listOf(contentStatus),
+                    type = listOf(type)
+                    //status = listOf(type),
                     //year = "2002"
                 )
             )

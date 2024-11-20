@@ -8,71 +8,53 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.movies.data.datastore.DataStoreManager
 import com.example.movies.domain.IMovieRepository
+import com.example.movies.presentation.mapper.MovieUiMapper
+import com.example.movies.presentation.model.MovieUiModel
 import com.example.movies.state.ListState
-import com.example.movies.utils.LocalUtils.isFilter
-import com.example.movies.utils.launchLoadingAndError
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import java.io.IOException
 import java.util.logging.Logger
 import java.net.UnknownHostException
 
 class MovieViewModel(
+    private val repository: IMovieRepository,
+    private val uiMapper: MovieUiMapper,
     val context: Context,
-    private val repository: IMovieRepository
+
 ) : ViewModel() {
     private val mutableState = MutableListState()
     val viewState = mutableState as ListState
     val dataStoreManager = DataStoreManager(context)
 
+    private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+        mutableState.loading = false
+        mutableState.error = when (exception) {
+            is IOException -> "Проблемы с подключением к интернету. Проверьте ваше подключение."
+            is UnknownHostException -> "Не удается найти сервер. Проверьте ваше подключение."
+            else -> "Произошла ошибка: ${exception.localizedMessage}"
+        }
+    }
     init {
-        loadTmp()
-    }
-    private fun loadTmp() {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                dataStoreManager.getSettings().collect { settings ->
-
-                    val savedStatus = settings.type.split(",").filter { it.isNotBlank() }
-                    val savedContentRating =
-                        settings.status.split(",").filter { it.isNotBlank() }
-
-                    isFilter.value =
-                        savedStatus.isNotEmpty() || savedContentRating.isNotEmpty()
-                    if (isFilter.value) {
-                        loadMovies(savedStatus[0], savedContentRating[0])
-                    }else{
-                        loadMovies(mutableState.searchName, mutableState.filterContentStatus )
-                    }
-                }
-            } catch (e: Exception) {
-            }
-        }
+        loadMovies()
     }
 
-    fun loadMovies(type: String, contentStatus: String) {
-        LOG.info("loadFilms, $type, $contentStatus")
-        viewModelScope.launchLoadingAndError(
-            handleError = { error ->
-                mutableState.error = when (error) {
-                    is IOException -> "Проверьте подключение к интернету."
-                    else -> error.localizedMessage
-                }},
-            updateLoading = { mutableState.loading = it }
-        ) {
+    fun loadMovies() {
+        viewModelScope.launch(exceptionHandler) {
+            mutableState.loading = true
             mutableState.error = null
-            mutableState.items = repository.getMovie(type, contentStatus)
+            mutableState.items = emptyList()
+            val movies = repository.getMovie(viewState.searchName)
+            mutableState.items = movies.map{uiMapper.mapMovie(it)}
+            mutableState.loading = false
         }
     }
 
-    fun getMovieById(id: Long): Movie? {
-        return viewState.items.find { it.id == id }
-    }
 
     private class MutableListState : ListState {
         override var searchName: String by mutableStateOf(DEFAULT_SEARCH_NAME)
         override var filterContentStatus: String by mutableStateOf(DEFAULT_CONTENT_STATUS)
-        override var items: List<Movie> by mutableStateOf(emptyList())
+        override var items: List<MovieUiModel> by mutableStateOf(emptyList())
         override var error: String? by mutableStateOf(null)
         override var loading: Boolean by mutableStateOf(false)
     }
